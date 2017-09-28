@@ -23,6 +23,7 @@ AnaliseData* initAnalise(AnaliseType analiseType) {
   ret->analiseType = analiseType;
   switch (analiseType) {
     case CACHE_HIT:
+#ifdef SDUMONT
       numEvents = 5;
       events = (int*) malloc(sizeof(int)*numEvents);
       events[0] = PAPI_L1_DCM;
@@ -30,6 +31,22 @@ AnaliseData* initAnalise(AnaliseType analiseType) {
       events[2] = PAPI_SR_INS;
       events[3] = PAPI_L2_DCM;
       events[4] = PAPI_L2_DCH;
+#endif
+#ifdef MERLIN
+      numEvents = 4;
+      events = (int*) malloc(sizeof(int)*numEvents);
+      events[0] = PAPI_L1_TCM;
+      events[1] = PAPI_L1_TCH;
+      events[2] = PAPI_L2_DCM;
+      events[3] = PAPI_L2_DCH;
+#endif
+#ifdef JETSON
+      numEvents = 3;
+      events = (int*) malloc(sizeof(int)*numEvents);
+      events[0] = PAPI_L1_DCA;
+      events[1] = PAPI_L1_DCM;
+      events[2] = PAPI_L2_DCM;
+#endif
       break;
 
     case IPC:
@@ -109,6 +126,8 @@ void printResult(AnaliseData* analiseData, int nx, int ny, int nz, int tx, int t
   long_long dcal1; // Data cache access l1
   long_long dcml2; // Data cache miss l2
   long_long dchl2; // Data cache hit l2
+  double cacheHitsL1;
+  double cacheHitsL2;
 
   // IPC variables
   long_long inst; // Total instructions
@@ -116,13 +135,26 @@ void printResult(AnaliseData* analiseData, int nx, int ny, int nz, int tx, int t
 
   switch(analiseData->analiseType) {
     case CACHE_HIT:
+#ifdef SDUMONT
       dcml1 = analiseData->eventCounts[0]; 
       dcal1 = analiseData->eventCounts[1] + analiseData->eventCounts[2]; 
       dcml2 = analiseData->eventCounts[3]; 
       dchl2 = analiseData->eventCounts[4]; 
-
-      double cacheHitsL1 = (dcal1 - dcml1)/(double)dcal1;
-      double cacheHitsL2 = dchl2/(double)(dcml2 + dchl2);
+#endif
+#ifdef MERLIN
+      dcml1 = analiseData->eventCounts[0]; 
+      dcal1 = analiseData->eventCounts[0] + analiseData->eventCounts[1]; 
+      dcml2 = analiseData->eventCounts[2]; 
+      dchl2 = analiseData->eventCounts[3]; 
+#endif
+#ifdef JETSON
+      dcml1 = analiseData->eventCounts[1];
+      dcal1 = analiseData->eventCounts[0];
+      dcml2 = analiseData->eventCounts[2];
+      dchl2 = dcml1 - dcml2;
+#endif
+      cacheHitsL1 = (dcal1 - dcml1)/(double)dcal1;
+      cacheHitsL2 = dchl2/(double)(dcml2 + dchl2);
       printf("%ld;%g;%g;%g;%g\n", size, time, gflops, cacheHitsL1, cacheHitsL2);
       break;
 

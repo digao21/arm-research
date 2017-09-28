@@ -41,7 +41,7 @@ void constTimestepExp(Optimization OPTIMIZATION, AnaliseType ANALISE_TYPE,
 
 void performanceExperiment() {
   warmUp();
-  constTimestepExp(BLOCKED_OPT, IPC, 32, 2048, 32, 256, 256, 5, 512, 256, 0);
+  constTimestepExp(NO_OPT, IPC, 32, 2048, 32, 256, 256, 5, 512, 256, 0);
 }
 
 void blockAnalise() {
