@@ -4,15 +4,16 @@
 
 ###########################
 # BSC
-# FLAGS = -march=armv8-a -O3
-# INCL_PAPI = $(PAPI_INCL) -DHAVE_PAPI
-# LINK_PAPI = $(PAPI_LIBS) -lpapi
+PARTITION = -D JETSON # chose one -JETSON -MERLIN
+FLAGS = -march=armv8-a -O3 $(PARTITION)
+INCL_PAPI = $(PAPI_INCL) -DHAVE_PAPI
+LINK_PAPI = $(PAPI_LIBS) -lpapi
 
 ###########################
 # SDUMONT
-FLAGS = -O3
-INCL_PAPI = -I/opt/bullxde/perftools/papi-bull/5.4.3.0/include -DHAVE_PAPI
-LINK_PAPI = -L/opt/bullxde/perftools/papi-bull/5.4.3.0/lib64 -lpapi
+# FLAGS = -O3
+# INCL_PAPI = -I/opt/bullxde/perftools/papi-bull/5.4.3.0/include -DHAVE_PAPI
+# LINK_PAPI = -L/opt/bullxde/perftools/papi-bull/5.4.3.0/lib64 -lpapi
 
 CC = gcc $(FLAGS)
 

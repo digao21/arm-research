@@ -8,6 +8,7 @@
 
 int main(int argc,char *argv[])
 {
+//  blockAnalise();
   performanceExperiment();
   return EXIT_SUCCESS;
 }
