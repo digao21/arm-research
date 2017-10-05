@@ -4,7 +4,4 @@
 #SBATCH --partition=jetson-tx
 #SBATCH --exclusive
 
-srun --output=out/probe2.csv bin/probe.exe
-srun --output=out/probe3.csv bin/probe.exe
-srun --output=out/probe4.csv bin/probe.exe
-srun --output=out/probe5.csv bin/probe.exe
+srun --output=out/probe1.csv bin/probe.exe

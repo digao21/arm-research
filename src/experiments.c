@@ -12,6 +12,7 @@ typedef const int Optimization;
 #define CIRCQUEUE_OPT 2
 #define OBLIVIOUS_OPT 3
 #define TIMESKEW_OPT  4
+#define CPU_OPT       5
 
 
 /* PRIVATE METHODS DECLARATION */
@@ -41,7 +42,7 @@ void constTimestepExp(Optimization OPTIMIZATION, AnaliseType ANALISE_TYPE,
 
 void performanceExperiment() {
   warmUp();
-  constTimestepExp(NO_OPT, IPC, 32, 2048, 32, 256, 256, 5, 512, 256, 0);
+  constTimestepExp(CPU_OPT, IPC, 32+2, 1024+2, 32, 256+2, 256+2, 5, 512, 256, 0);
 }
 
 void blockAnalise() {
@@ -63,11 +64,12 @@ void solveStencil(Optimization OPTIMIZATION,
                   const int NX, const int NY,  const int NZ,
                   const int TX, const int TY,  const int TZ) {
   switch (OPTIMIZATION) {
-    case NO_OPT: StencilProbe(A0, Anext, NX, NY, NZ, TIMESTEPS); break;
+    case NO_OPT:        StencilProbe(A0, Anext, NX, NY, NZ, TIMESTEPS); break;
     case BLOCKED_OPT:   StencilProbeBlocked(A0, Anext, NX, NY, NZ, TX, TY, TZ, TIMESTEPS); break;
     case CIRCQUEUE_OPT: StencilProbeCircqueue(A0, Anext, NX, NY, NZ, TX, TY, TZ, TIMESTEPS); break;
     case OBLIVIOUS_OPT: StencilProbeOblivious(A0, Anext, NX, NY, NZ, TX, TY, TZ, TIMESTEPS); break;
     case TIMESKEW_OPT:  StencilProbeTimeskew(A0, Anext, NX, NY, NZ, TX, TY, TZ, TIMESTEPS); break;
+    case CPU_OPT:       StencilProbeCPU(A0, Anext, NX, NY, NZ, TIMESTEPS); break;
 
     default: printf("[execStencil.func] - Undefined optimization\n"); exit(1);
   };

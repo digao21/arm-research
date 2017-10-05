@@ -23,11 +23,11 @@ OBJ_DIR = $(BIN_DIR)/obj
 ASM_DIR = $(BIN_DIR)/asm
 
 ALL_OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/analise.o $(OBJ_DIR)/experiments.o $(OBJ_DIR)/util.o \
-          $(OBJ_DIR)/probe_heat.o $(OBJ_DIR)/probe_heat_blocked.o $(OBJ_DIR)/probe_heat_circqueue.o \
-          $(OBJ_DIR)/probe_heat_oblivious.o $(OBJ_DIR)/probe_heat_timeskew.o
+          $(OBJ_DIR)/probe_heat.o $(OBJ_DIR)/probe_heat_cpu.o $(OBJ_DIR)/probe_heat_blocked.o \
+          $(OBJ_DIR)/probe_heat_circqueue.o $(OBJ_DIR)/probe_heat_oblivious.o $(OBJ_DIR)/probe_heat_timeskew.o
 
 probe:	main analise experiments util \
-	probe_heat probe_heat_blocked probe_heat_circqueue probe_heat_oblivious probe_heat_timeskew
+	probe_heat probe_heat_cpu probe_heat_blocked probe_heat_circqueue probe_heat_oblivious probe_heat_timeskew
 	$(CC) -o $(BIN_DIR)/probe.exe $(ALL_OBJ)  $(LINK_PAPI)
 
 main:	$(SRC)/main.c $(SRC)/experiments.h
@@ -49,6 +49,11 @@ util:	$(SRC)/util.c $(SRC)/util.h $(SRC)/cycle.h
 probe_heat: $(SRC)/probe_heat.c $(SRC)/common.h
 	$(CC) -c $(SRC)/probe_heat.c -o $(OBJ_DIR)/probe_heat.o
 	$(CC) -S $(SRC)/probe_heat.c -o $(ASM_DIR)/probe_heat.asm
+
+probe_heat_cpu: $(SRC)/probe_heat_cpu.c $(SRC)/common.h
+	$(CC) -c $(SRC)/probe_heat_cpu.c -o $(OBJ_DIR)/probe_heat_cpu.o
+	$(CC) -S $(SRC)/probe_heat_cpu.c -o $(ASM_DIR)/probe_heat_cpu.asm
+
 
 probe_heat_blocked:	$(SRC)/probe_heat_blocked.c $(SRC)/common.h
 	$(CC) -c $(SRC)/probe_heat_blocked.c -o $(OBJ_DIR)/probe_heat_blocked.o
