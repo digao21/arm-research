@@ -61,7 +61,7 @@ void PolyU2(float *a, float *b,
 void PolyU4(float *a, float *b, 
 	    float c1, float c2,
 	    long size) {
-  register float32x4_t res, alpha, beta;
+  float32x4_t res, alpha, beta;
   long ind;
   int mono;
 
@@ -94,9 +94,9 @@ void PolyU4(float *a, float *b,
 void PolyU8(float *a, float *b, 
 	    float c1, float c2,
 	    long size) {
-  register float32x4_t beta;
-  register float32x4_t res0, res1;
-  register float32x4_t alpha0, alpha1;
+  float32x4_t beta;
+  float32x4_t res0, res1;
+  float32x4_t alpha0, alpha1;
   long ind;
   int mono;
 
@@ -141,9 +141,9 @@ void PolyU8(float *a, float *b,
 void PolyU16(float *a, float *b, 
 	     float c1, float c2,
 	     long size) {
-  register float32x4_t beta;
-  register float32x4_t res0, res1, res2, res3;
-  register float32x4_t alpha0, alpha1, alpha2, alpha3;
+  float32x4_t beta;
+  float32x4_t res0, res1, res2, res3;
+  float32x4_t alpha0, alpha1, alpha2, alpha3;
   long ind;
   int mono;
 
@@ -211,6 +211,17 @@ void PolyU16(float *a, float *b,
   }
 }
 
+void verify(float* h, int size) {
+#define EPSILON 0.001
+  int i;
+  for(i=0; i<size && i < 10; i++) {
+    if(h[i] - 8193 < -EPSILON || EPSILON < h[i] - 8193) {
+      printf("[ERROR] ");
+      return;
+    }
+  }
+  printf("[OK] ");
+}
 
 int main(int argc, char* argv[]) {
 #define ALPHA 1.0
@@ -238,6 +249,7 @@ int main(int argc, char* argv[]) {
   PolyU0(h_a, h_b, ALPHA, BETA, arrayElements);
   t1 = wall_time();
   timeComp = t1-t0;
+  verify(h_b, arrayElements);
   gBytes=2.0*((float)arrayElements)*sizeof(float)*1.0e-9/timeComp;
   gFlops=2.0*((float)arrayElements)*DEGREE*1.0e-9/timeComp;
   printf("unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n", 
@@ -247,6 +259,7 @@ int main(int argc, char* argv[]) {
   PolyU2(h_a, h_b, ALPHA, BETA, arrayElements);
   t1 = wall_time();
   timeComp = t1-t0;
+  verify(h_b, arrayElements);
   gBytes=2.0*((float)arrayElements)*sizeof(float)*1.0e-9/timeComp;
   gFlops=2.0*((float)arrayElements)*DEGREE*1.0e-9/timeComp;
   printf("unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n", 
@@ -256,6 +269,7 @@ int main(int argc, char* argv[]) {
   PolyU4(h_a, h_b, ALPHA, BETA, arrayElements);
   t1 = wall_time();
   timeComp = t1-t0;
+  verify(h_b, arrayElements);
   gBytes=2.0*((float)arrayElements)*sizeof(float)*1.0e-9/timeComp;
   gFlops=2.0*((float)arrayElements)*DEGREE*1.0e-9/timeComp;
   printf("unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n", 
@@ -265,6 +279,7 @@ int main(int argc, char* argv[]) {
   PolyU8(h_a, h_b, ALPHA, BETA, arrayElements);
   t1 = wall_time();
   timeComp = t1-t0;
+  verify(h_b, arrayElements);
   gBytes=2.0*((float)arrayElements)*sizeof(float)*1.0e-9/timeComp;
   gFlops=2.0*((float)arrayElements)*DEGREE*1.0e-9/timeComp;
   printf("unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n", 
@@ -274,6 +289,7 @@ int main(int argc, char* argv[]) {
   PolyU16(h_a, h_b, ALPHA, BETA, arrayElements);
   t1 = wall_time();
   timeComp = t1-t0;
+  verify(h_b, arrayElements);
   gBytes=2.0*((float)arrayElements)*sizeof(float)*1.0e-9/timeComp;
   gFlops=2.0*((float)arrayElements)*DEGREE*1.0e-9/timeComp;
   printf("unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n", 

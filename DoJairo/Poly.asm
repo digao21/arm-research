@@ -338,6 +338,62 @@ PolyU16:
 	add	sp, sp, 80
 	ret
 	.size	PolyU16, .-PolyU16
+	.align	2
+	.global	verify
+	.type	verify, %function
+verify:
+	cmp	w1, wzr
+	ble	.L35
+	ldr	s0, [x0]
+	ldr	s1, .LC1
+	ldr	d2, .LC2
+	fsub	s0, s0, s1
+	fcvt	d0, s0
+	fcmpe	d0, d2
+	bmi	.L36
+	ldr	d3, .LC3
+	add	x0, x0, 4
+	fcmpe	d0, d3
+	mov	w2, 0
+	ble	.L38
+	b	.L36
+.L45:
+	cmp	w2, 9
+	bgt	.L35
+	ldr	s0, [x0]
+	add	x0, x0, 4
+	fsub	s0, s0, s1
+	fcvt	d0, s0
+	fcmpe	d0, d2
+	bmi	.L36
+	fcmpe	d0, d3
+	bgt	.L36
+.L38:
+	add	w2, w2, 1
+	cmp	w1, w2
+	bgt	.L45
+.L35:
+	adrp	x1, .LC5
+	mov	w0, 1
+	add	x1, x1, :lo12:.LC5
+	b	__printf_chk
+.L36:
+	adrp	x1, .LC4
+	mov	w0, 1
+	add	x1, x1, :lo12:.LC4
+	b	__printf_chk
+	.size	verify, .-verify
+	.align	2
+.LC1:
+	.word	1174406144
+	.align	3
+.LC2:
+	.word	3539053052
+	.word	-1085250995
+	.align	3
+.LC3:
+	.word	3539053052
+	.word	1062232653
 	.section	.text.startup,"ax",%progbits
 	.align	2
 	.global	main
@@ -358,19 +414,19 @@ main:
 	neg	x1, x1
 	ands	x1, x1, 3
 	mov	x21, x0
-	beq	.L46
+	beq	.L58
 	fmov	s0, 1.0e+0
 	cmp	x1, 1
 	str	s0, [x20]
-	bls	.L47
+	bls	.L59
 	cmp	x1, 2
 	str	s0, [x20,4]
-	bls	.L48
+	bls	.L60
 	mov	x0, 65533
 	movk	x0, 0x3, lsl 16
 	mov	x2, 3
 	str	s0, [x20,8]
-.L35:
+.L47:
 	mov	x5, 262144
 	sub	x5, x5, x1
 	lsr	x6, x5, 2
@@ -378,63 +434,66 @@ main:
 	add	x1, x20, x1, lsl 2
 	mov	x4, 0
 	fmov	v0.4s, 1.0e+0
-.L41:
+.L53:
 	add	x4, x4, 1
 	cmp	x4, x6
 	st1	{v0.4s}, [x1],16
-	bcc	.L41
+	bcc	.L53
 	cmp	x5, x3
 	add	x2, x2, x3
 	sub	x0, x0, x3
-	beq	.L39
+	beq	.L51
 	fmov	s0, 1.0e+0
 	cmp	x0, 1
 	str	s0, [x20,x2,lsl 2]
 	add	x1, x2, 1
-	beq	.L39
+	beq	.L51
 	cmp	x0, 2
 	str	s0, [x20,x1,lsl 2]
 	add	x2, x2, 2
-	beq	.L39
+	beq	.L51
 	str	s0, [x20,x2,lsl 2]
-.L39:
+.L51:
 	mov	x2, 1048576
 	mov	w1, 0
 	mov	x0, x21
 	bl	memset
 	bl	wall_time
-	fmov	d8, d0
+	fmov	d10, d0
 	mov	x2, 0
 	fmov	s3, 1.0e+0
-.L45:
+.L57:
 	ldr	s2, [x20,x2]
 	mov	w19, 8192
 	fmov	s1, 1.0e+0
-.L43:
+.L55:
 	subs	w19, w19, #1
 	fmadd	s1, s2, s1, s3
-	bne	.L43
+	bne	.L55
 	str	s1, [x21,x2]
 	add	x2, x2, 4
 	cmp	x2, 1048576
-	bne	.L45
+	bne	.L57
 	bl	wall_time
-	fsub	d1, d0, d8
-	ldr	d9, .LC2
-	ldr	d8, .LC3
-	adrp	x22, .LC1
-	fdiv	d2, d8, d1
-	fmov	d0, d1
-	add	x22, x22, :lo12:.LC1
+	fsub	d10, d0, d10
+	mov	x0, x21
+	mov	w1, 262144
+	adrp	x22, .LC6
+	bl	verify
+	ldr	d9, .LC7
+	ldr	d8, .LC8
+	fdiv	d1, d9, d10
+	fmov	d0, d10
+	add	x22, x22, :lo12:.LC6
 	mov	x3, 262144
 	mov	w2, w19
 	mov	x1, x22
 	mov	w0, 1
-	fdiv	d3, d9, d1
+	fdiv	d2, d8, d10
+	fcvt	s1, d1
+	fcvt	d1, s1
 	fcvt	s2, d2
 	fcvt	d2, s2
-	fcvt	s1, d3
-	fcvt	d1, s1
 	bl	__printf_chk
 	bl	wall_time
 	fmov	d10, d0
@@ -445,18 +504,21 @@ main:
 	mov	x2, 262144
 	bl	PolyU2
 	bl	wall_time
-	fsub	d1, d0, d10
+	fsub	d10, d0, d10
+	mov	x0, x21
+	mov	w1, 262144
+	bl	verify
+	fdiv	d1, d9, d10
+	fmov	d0, d10
 	mov	x3, 262144
 	mov	x1, x22
 	mov	w2, 2
-	fdiv	d2, d8, d1
-	fmov	d0, d1
 	mov	w0, 1
-	fdiv	d3, d9, d1
+	fdiv	d2, d8, d10
+	fcvt	s1, d1
+	fcvt	d1, s1
 	fcvt	s2, d2
 	fcvt	d2, s2
-	fcvt	s1, d3
-	fcvt	d1, s1
 	bl	__printf_chk
 	bl	wall_time
 	fmov	d10, d0
@@ -467,18 +529,21 @@ main:
 	mov	x2, 262144
 	bl	PolyU4
 	bl	wall_time
-	fsub	d1, d0, d10
+	fsub	d10, d0, d10
+	mov	x0, x21
+	mov	w1, 262144
+	bl	verify
+	fdiv	d1, d9, d10
+	fmov	d0, d10
 	mov	x3, 262144
 	mov	x1, x22
 	mov	w2, 4
-	fdiv	d2, d8, d1
-	fmov	d0, d1
 	mov	w0, 1
-	fdiv	d3, d9, d1
+	fdiv	d2, d8, d10
+	fcvt	s1, d1
+	fcvt	d1, s1
 	fcvt	s2, d2
 	fcvt	d2, s2
-	fcvt	s1, d3
-	fcvt	d1, s1
 	bl	__printf_chk
 	bl	wall_time
 	fmov	d10, d0
@@ -489,15 +554,18 @@ main:
 	mov	x2, 262144
 	bl	PolyU8
 	bl	wall_time
-	fsub	d1, d0, d10
+	fsub	d10, d0, d10
+	mov	x0, x21
+	mov	w1, 262144
+	bl	verify
+	fdiv	d1, d9, d10
+	fmov	d0, d10
 	mov	x3, 262144
 	mov	x1, x22
 	mov	w2, 8
-	fdiv	d3, d9, d1
-	fmov	d0, d1
 	mov	w0, 1
-	fdiv	d2, d8, d1
-	fcvt	s1, d3
+	fdiv	d2, d8, d10
+	fcvt	s1, d1
 	fcvt	d1, s1
 	fcvt	s2, d2
 	fcvt	d2, s2
@@ -511,18 +579,21 @@ main:
 	mov	x2, 262144
 	bl	PolyU16
 	bl	wall_time
-	fsub	d1, d0, d10
+	fsub	d10, d0, d10
+	mov	x0, x21
+	mov	w1, 262144
+	bl	verify
+	fdiv	d1, d9, d10
+	fmov	d0, d10
 	mov	x1, x22
 	mov	w2, 16
 	mov	x3, 262144
-	fdiv	d2, d8, d1
-	fmov	d0, d1
 	mov	w0, 1
-	fdiv	d9, d9, d1
+	fdiv	d2, d8, d10
+	fcvt	s1, d1
+	fcvt	d1, s1
 	fcvt	s2, d2
 	fcvt	d2, s2
-	fcvt	s1, d9
-	fcvt	d1, s1
 	bl	__printf_chk
 	mov	x0, x20
 	bl	free
@@ -535,30 +606,36 @@ main:
 	ldr	d10, [sp,64]
 	ldp	x29, x30, [sp], 80
 	ret
-.L48:
+.L60:
 	mov	x0, 262142
 	mov	x2, 2
-	b	.L35
-.L47:
+	b	.L47
+.L59:
 	mov	x0, 262143
 	mov	x2, 1
-	b	.L35
-.L46:
+	b	.L47
+.L58:
 	mov	x0, 262144
 	mov	x2, x1
-	b	.L35
+	b	.L47
 	.size	main, .-main
 	.align	3
-.LC2:
+.LC7:
 	.word	3894859413
 	.word	1063333387
 	.align	3
-.LC3:
+.LC8:
 	.word	3894859413
 	.word	1074867723
 	.section	.rodata.str1.8,"aMS",%progbits,1
 	.align	3
-.LC1:
+.LC4:
+	.string	"[ERROR] "
+	.zero	7
+.LC5:
+	.string	"[OK] "
+	.zero	2
+.LC6:
 	.string	"unroll=%d, tamanho=%ld, tempo=%f, gBytes=%f, gFlops=%f\n"
 	.ident	"GCC: (Ubuntu/Linaro 4.8.4-2ubuntu1~14.04.3) 4.8.4"
 	.section	.note.GNU-stack,"",%progbits

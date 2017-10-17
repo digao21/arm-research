@@ -1,5 +1,5 @@
-unroll=0, tamanho=262144, tempo=12.663084, gBytes=0.000166, gFlops=0.339172
-unroll=2, tamanho=262144, tempo=6.204170, gBytes=0.000338, gFlops=0.692271
-unroll=4, tamanho=262144, tempo=1.553492, gBytes=0.001350, gFlops=2.764718
-unroll=8, tamanho=262144, tempo=0.777855, gBytes=0.002696, gFlops=5.521553
-unroll=16, tamanho=262144, tempo=0.390170, gBytes=0.005375, gFlops=11.007942
+[OK] unroll=0, tamanho=262144, tempo=12.607390, gBytes=0.000166, gFlops=0.340671
+[OK] unroll=2, tamanho=262144, tempo=6.203895, gBytes=0.000338, gFlops=0.692302
+[OK] unroll=4, tamanho=262144, tempo=1.553475, gBytes=0.001350, gFlops=2.764748
+[OK] unroll=8, tamanho=262144, tempo=0.777912, gBytes=0.002696, gFlops=5.521147
+[OK] unroll=16, tamanho=262144, tempo=0.390084, gBytes=0.005376, gFlops=11.010365
