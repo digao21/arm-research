@@ -1,0 +1,7 @@
+[OK] normal   perf = 0.172854 (gflops)
+[OK] unroll2  perf = 0.644512 (gflops)
+[OK] unroll4  perf = 1.293147 (gflops)
+[OK] unroll8  perf = 2.584553 (gflops)
+[OK] unroll16  perf = 5.157824 (gflops)
+[OK] unroll30  perf = 6.448363 (gflops)
+240.000000 -- cheat  perf = 6.448363 (gflops)

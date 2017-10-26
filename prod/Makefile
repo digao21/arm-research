@@ -6,9 +6,9 @@ COMP=-c
 CCFLAGS= -O3
 CCLOAD= $(CCFLAGS)
 
-EXEC=Poly.exe
+EXEC=prod.exe
 
-OBJ=Poly.o 
+OBJ=prod.o 
 
 
 $(EXEC):	$(OBJ) 
@@ -21,6 +21,6 @@ clean:
 .SUFFIXES	:	.o .c
 
 .c.o:
-	$(CC) $(COMP) $(CCFLAGS) Poly.c 
-	$(CC) -S $(CCFLAGS) Poly.c -o Poly.asm
+	$(CC) $(COMP) $(CCFLAGS) prod.c 
+	$(CC) -S $(CCFLAGS) prod.c -o prod.asm
 
